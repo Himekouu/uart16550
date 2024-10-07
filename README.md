@@ -19,4 +19,4 @@ UART16550的部分实现
 
 
 ##用户寄存器中已实现的功能
-<div align=center><img src="https://github.com/twomonkeyclub/UART/blob/master/utils/frame.png" height="200"/> </div>
+<div align=center><img src="https://github.com/Himekouu/uart16550/tree/main/doc/User Registers.png" height="200"/> </div>
