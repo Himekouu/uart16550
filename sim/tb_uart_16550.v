@@ -11,6 +11,7 @@ module tb_uart_16550();
 
   wire	[31:0]  PRDATA;
   wire          TXD;
+  wire          irq;
 
 initial begin
   PCLK = 1'b1;
@@ -33,12 +34,22 @@ initial begin
   APB_write(3'b000, 8'b0010_0000);  //设置波特率低八位
   APB_write(3'b001, 8'b0001_1100);  //设置波特率高八位
   APB_write(3'b011, 8'b0000_1011);  //设置字长为8，奇校验
+  APB_write(3'b001, 8'b0000_0100);  //设置中断
   APB_write(3'b000, 8'b1010_0111);  //设置写入数据
 
 end
 initial begin
   #500
-  rx_bit(9'b1_0110_1011, 2'd3, 16'd434, 1'b0);
+  rx_bit(9'b1_0110_1011, 2'd3, 16'd434, 1'b1);
+  APB_read(3'b010);   //读中断类型信息
+  APB_read(3'b101);   //读接收数据信息
+  APB_read(3'b000);   //读接收数据
+  APB_read(3'b101);   //读接收数据信息
+  #9000
+  APB_write(3'b001, 8'b0000_0001);  //设置中断
+  APB_write(3'b011, 8'b0000_0011);  //设置字长为8，无奇偶校验
+  rx_bit(9'b0_1100_0011, 2'd3, 16'd434, 1'b0);
+  APB_read(3'b010);   //读中断类型信息
   APB_read(3'b101);   //读接收数据信息
   APB_read(3'b000);   //读接收数据
   APB_read(3'b101);   //读接收数据信息
@@ -114,6 +125,7 @@ uart_16550 uart_16550_inst (
   .RXD(RXD),
 
   .PRDATA(PRDATA),
-  .TXD(TXD)
+  .TXD(TXD),
+  .irq(irq)
 );
 endmodule

@@ -12,6 +12,7 @@ reg           pi_flag;
 
 wire          tx;
 wire          po_flag;
+wire          busy_flag;
 
 initial begin
   clk = 1'b1;
@@ -70,6 +71,7 @@ transmitter transmitter_inst (
   .pi_flag(pi_flag),
 
   .tx(tx),
-  .po_flag(po_flag)
+  .po_flag(po_flag),
+  .busy_flag(busy_flag)
 );
 endmodule

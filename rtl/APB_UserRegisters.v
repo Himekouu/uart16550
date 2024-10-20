@@ -20,7 +20,13 @@ module APB_UserRegisters (
   output	wire	        set_break,
   output	wire	[7:0]   tx_data,
   output	reg 	        read_flag,
-  output	reg 	        write_flag
+  output	reg 	        write_flag,
+
+  input		wire	        interrupt_status,
+  input		wire	[2:0]   interrupt_type,
+
+  output 	reg 	[5:0]   interrupt_en,
+  output 	wire	        error
 );
 //General Register Set
 reg   [7:0]   RHR;  //000  R  Receiver Holding Register
@@ -46,7 +52,6 @@ always @(posedge PCLK or negedge PRESETn)
 
       THR <= 8'd0;
       IER <= 8'd0;
-      ISR <= 8'd0;
       FCR <= 8'd0;
       LCR <= 8'd0;
       MCR <= 8'd0;
@@ -125,6 +130,21 @@ always @(posedge PCLK or negedge PRESETn)
 
 always @(posedge PCLK or negedge PRESETn)
   if(PRESETn == 1'b0)
+    interrupt_en <= 6'd0;
+  else begin
+    interrupt_en <= {IER[7:6], IER[3:0]};
+  end
+
+always @(posedge PCLK or negedge PRESETn)
+  if(PRESETn == 1'b0)
+    ISR <= 8'd0;
+  else begin
+    ISR[0] <= ~interrupt_status;
+    ISR[3:1] <= interrupt_type;
+  end
+
+always @(posedge PCLK or negedge PRESETn)
+  if(PRESETn == 1'b0)
     read_flag <= 1'b0;
   else if((PWRITE == 1'b0) && (PSELx == 1'b1) && (PADDR == 3'b000) && (LCR[7] == 1'b0))
     read_flag <= 1'b1;
@@ -147,5 +167,7 @@ assign set_break = LCR[6];
 assign tx_data = THR;
 
 assign baud_rate_cnt = (22'd3_125_000 / {DLM, DLL});
+
+assign error = LSR[2];
   
 endmodule

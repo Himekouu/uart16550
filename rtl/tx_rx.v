@@ -14,7 +14,8 @@ module tx_rx (
   output	wire					tx,
   output	wire	[7:0]   po_rx_data,
   output	wire					parity_error,
-  output	wire 					data_ready
+  output	wire 					data_ready,
+  output	wire 					busy_flag
 );
 wire  [8:0]   rx_data;
 wire          rx_flag;
@@ -63,7 +64,8 @@ transmitter transmitter_inst (
   .pi_tx_data(tx_data),
   .pi_flag(tx_flag),
 
-  .tx(tx)
+  .tx(tx),
   // .po_flag()
+  .busy_flag(busy_flag)
 );
 endmodule

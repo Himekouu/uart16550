@@ -10,7 +10,8 @@ module transmitter (
   input   wire          pi_flag,
 
   output  reg           tx,
-  output  wire          po_flag
+  output  wire          po_flag,
+  output  wire          busy_flag
 );
 
 reg           work_en, bit_flag;
@@ -64,5 +65,7 @@ always @(posedge clk or negedge rst_n)
     endcase
 
 assign po_flag = (bit_cnt == (4'd7 + word_length + parity_en + stop_bits))? bit_flag : 1'b0;
+
+assign busy_flag = (bit_cnt != 4'd0)? 1'b1 : 1'b0;
 
 endmodule

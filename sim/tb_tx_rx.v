@@ -16,6 +16,7 @@ module tb_tx_rx();
   wire	[7:0]   po_rx_data;
   wire					parity_error;
   wire 					data_ready;
+  wire 					busy_flag;
 initial begin
   clk = 1'b1;
   rst_n <= 1'b0;
@@ -88,7 +89,8 @@ tx_rx tx_rx_inst (
   .tx(tx),
   .po_rx_data(po_rx_data),
   .parity_error(parity_error),
-  .data_ready(data_ready)
+  .data_ready(data_ready),
+  .busy_flag(busy_flag)
 );
 
 endmodule
