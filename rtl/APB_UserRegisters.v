@@ -84,9 +84,7 @@ always @(posedge PCLK or negedge PRESETn)
           3'b111  : SPR <= PWDATA[7:0];
         endcase
     end
-  else if((PWRITE == 1'b0) && (PSELx == 1'b1) && (PENABLE == 1'b1))
-    PRDATA <= 32'bz;
-  else if((PWRITE == 1'b0) && (PSELx == 1'b1))
+  else if((PWRITE == 1'b0) && (PSELx == 1'b1) && (PENABLE == 1'b0))
     begin
       if(LCR[7] == 1'b0)
         case (PADDR)
@@ -113,6 +111,8 @@ always @(posedge PCLK or negedge PRESETn)
           default : PRDATA <= 32'b0;
         endcase
     end
+  else if((PWRITE == 1'b0) && (PSELx == 1'b1) && (PENABLE == 1'b1))
+    PRDATA <= 32'bz;
 
 always @(posedge PCLK or negedge PRESETn)
   if(PRESETn == 1'b0)
